@@ -38,6 +38,43 @@
   .pill { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:.35rem .9rem; font-size:.8rem; }
   .pill b { font-size:.95rem; }
 
+  /* ---- timeline ---- */
+  .tl-card { background:var(--card); border:1px solid var(--line); border-radius:10px; margin-bottom:1.4rem; overflow:hidden; }
+  .tl-card > h2 { font-size:.8rem; letter-spacing:.15em; color:var(--muted); font-weight:600; padding:.9rem 1rem .2rem; }
+  .tl-legend { font-size:.68rem; color:var(--muted); padding:.2rem 1rem .6rem; display:flex; gap:1rem; flex-wrap:wrap; }
+  .tl-scroll { overflow-x:auto; }
+  .tl-inner { min-width:760px; position:relative; padding:0 0 .6rem; }
+  .tl-axis { position:relative; height:26px; margin-left:170px; border-bottom:1px solid var(--line); }
+  .tl-axis .tick { position:absolute; top:0; height:100%; border-left:1px solid #edf1f6; font-size:.62rem; color:var(--muted); padding:.5rem 0 0 .25rem; white-space:nowrap; }
+  .tl-axis .tick.month { border-left-color:#d7dfe9; font-weight:700; color:var(--text); }
+  .tl-row { display:flex; align-items:stretch; border-bottom:1px solid #f2f5f9; }
+  .tl-row:hover { background:#fafcff; }
+  .tl-label { width:170px; flex-shrink:0; padding:.5rem .6rem .5rem 1rem; font-size:.74rem; line-height:1.3; }
+  .tl-label b { display:block; font-size:.76rem; }
+  .tl-label .fc { font-size:.66rem; color:var(--muted); }
+  .tl-label .fc.warn { color:var(--orange); font-weight:700; }
+  .tl-lane { position:relative; flex:1; min-height:46px; }
+  .tl-grid { position:absolute; top:0; bottom:0; border-left:1px solid #f0f4f8; }
+  .tl-grid.month { border-left-color:#dfe6ee; }
+  .tl-today { position:absolute; top:0; bottom:0; border-left:2px solid var(--gold); z-index:3; }
+  .tl-today-flag { position:absolute; top:2px; transform:translateX(-50%); background:var(--gold); color:var(--navy); font-size:.58rem; font-weight:700; padding:0 .35rem; border-radius:3px; z-index:4; }
+  .tl-bar { position:absolute; top:50%; transform:translateY(-50%); height:8px; border-radius:4px; opacity:.28; }
+  .tl-bar.f-red{background:var(--red)} .tl-bar.f-orange{background:var(--orange)} .tl-bar.f-yellow{background:var(--yellow)} .tl-bar.f-green{background:var(--green)} .tl-bar.f-gray{background:var(--gray)}
+  .tl-bar-dash { position:absolute; top:50%; transform:translateY(-50%); height:0; border-top:2px dashed #c3ccd8; }
+  .mk { position:absolute; transform:translate(-50%,-50%); z-index:2; font-size:.72rem; line-height:1; cursor:default; }
+  .mk.ms { top:30%; }
+  .mk.task { top:70%; }
+  .mk .dot { display:block; width:9px; height:9px; border-radius:50%; background:var(--navy2); border:2px solid #fff; box-shadow:0 0 0 1px #c9d3df; }
+  .mk.done .dot { background:#b9c4d0; }
+  .mk.overdue .dot { background:var(--red); box-shadow:0 0 0 1px var(--red); }
+  .mk .dia { display:block; width:10px; height:10px; background:var(--gold); border:1.5px solid #fff; box-shadow:0 0 0 1px #b09022; transform:rotate(45deg); }
+  .mk.done .dia { background:#cdd6e0; box-shadow:0 0 0 1px #b6c1cd; }
+  .mk.overdue .dia { background:var(--red); box-shadow:0 0 0 1px var(--red); }
+  .mk-fc { position:absolute; top:50%; transform:translate(-50%,-50%); z-index:2; }
+  .mk-fc .flagpole { display:block; width:2px; height:22px; background:var(--navy); margin:0 auto; }
+  .mk-fc .flaglabel { position:absolute; left:6px; top:-4px; font-size:.6rem; font-weight:700; color:var(--navy); background:#eef3f9; border:1px solid #d3dde8; border-radius:3px; padding:0 .3rem; white-space:nowrap; }
+  .mk-fc.lowconf .flaglabel { color:var(--orange); border-color:var(--orange); background:#fdf6ec; }
+
   /* ---- project cards ---- */
   .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
@@ -59,11 +96,21 @@
   .bar i { display:block; height:100%; background:linear-gradient(90deg,var(--navy2),var(--gold)); border-radius:4px; }
   .progress-wrap span { font-size:.75rem; color:var(--muted); white-space:nowrap; }
 
+  .fc-line { margin:.3rem 1rem .1rem; font-size:.78rem; background:#eef3f9; border-radius:5px; padding:.45rem .6rem; line-height:1.5; }
+  .fc-line b { color:var(--navy); }
+  .fc-line .conf-low { color:var(--orange); font-weight:700; }
+  .fc-line .conf-none { color:var(--muted); }
+
   .section { padding:.5rem 1rem .3rem; }
   .section h3 { font-size:.68rem; letter-spacing:.15em; color:var(--muted); margin-bottom:.35rem; font-weight:600; }
   .next { font-size:.8rem; background:#f2f6fb; border-left:3px solid var(--gold); padding:.45rem .6rem; border-radius:0 5px 5px 0; line-height:1.5; }
+  .piece { font-size:.76rem; padding:.32rem .55rem; border-radius:5px; margin-bottom:.3rem; line-height:1.45; background:#f6f8fb; border-left:3px solid #c3ccd8; }
+  .piece.blocker { background:#fdf1f1; border-left-color:var(--red); }
+  .piece.no_due, .piece.no_due_ms { background:#fdf8ec; border-left-color:var(--orange); }
+  .piece.dep { background:#f2f6fb; border-left-color:var(--navy2); }
+  .piece .who { color:var(--muted); font-size:.68rem; }
   .blockrow { font-size:.78rem; color:var(--red); padding:.3rem .5rem; background:#fdf1f1; border-radius:5px; margin-bottom:.3rem; line-height:1.45; }
-  .blockrow.resolved { color:var(--muted); background:#f3f5f7; text-decoration:none; }
+  .blockrow.resolved { color:var(--muted); background:#f3f5f7; }
   .blockrow .age { font-weight:700; }
 
   table { width:100%; border-collapse:collapse; font-size:.74rem; }
@@ -97,6 +144,15 @@
 </header>
 <main style="display:none" id="main">
   <div class="summary" id="summary"></div>
+  <div class="tl-card" id="tlcard">
+    <h2>TIMELINE — 完了予測</h2>
+    <div class="tl-legend">
+      <span>◆ マイルストーン</span><span>● タスク期日</span><span style="color:var(--red)">赤 = 期日超過</span>
+      <span><b style="color:var(--navy)">▏予測</b> = 最終期日ベースの完了予測</span>
+      <span style="color:var(--orange)">オレンジ予測 = 期日未定タスクあり（後ろにずれる可能性）</span>
+    </div>
+    <div class="tl-scroll"><div class="tl-inner" id="tl"></div></div>
+  </div>
   <div class="grid" id="grid"></div>
 </main>
 <footer style="display:none" id="ftr">Nsight Inc. — internal use only / データはAES-256-GCMで暗号化配信</footer>
@@ -137,11 +193,82 @@ async function unlock() {
 document.getElementById("pw").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
 
 function esc(s){ return String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+const DAY = 86400000;
+function d(iso){ return new Date(iso + "T00:00:00+09:00"); }
+function fmtMD(dt){ return (dt.getMonth()+1) + "/" + dt.getDate(); }
+
+function renderTimeline(projs, todayIso) {
+  const today = d(todayIso);
+  // domain: today-14d .. max(due,forecast)+10d (min span 6 weeks)
+  let maxT = new Date(today.getTime() + 28*DAY);
+  for (const p of projs) {
+    for (const x of [...(p.tasks||[]), ...(p.milestones||[])]) if (x.due) { const t = d(x.due); if (t > maxT) maxT = t; }
+    if (p.forecast && p.forecast.date) { const t = d(p.forecast.date); if (t > maxT) maxT = t; }
+  }
+  const minT = new Date(today.getTime() - 14*DAY);
+  maxT = new Date(maxT.getTime() + 10*DAY);
+  const span = maxT - minT;
+  const X = dt => Math.max(0, Math.min(100, (dt - minT) / span * 100));
+
+  // week ticks (Mondays)
+  let ticks = "";
+  const c = new Date(minT);
+  c.setDate(c.getDate() + ((8 - c.getDay()) % 7));
+  for (; c < maxT; c.setDate(c.getDate() + 7)) {
+    const isMonthStart = c.getDate() <= 7;
+    ticks += `<div class="tick ${isMonthStart?"month":""}" style="left:${X(c)}%">${fmtMD(new Date(c))}</div>`;
+  }
+
+  let gridTpl = "";
+  const g = new Date(minT);
+  g.setDate(g.getDate() + ((8 - g.getDay()) % 7));
+  for (; g < maxT; g.setDate(g.getDate() + 7)) {
+    gridTpl += `<div class="tl-grid ${g.getDate()<=7?"month":""}" style="left:${X(g)}%"></div>`;
+  }
+
+  const rows = projs.map(p => {
+    const f = FLAG[p.stats.flag] || FLAG["⚪"];
+    const fc = p.forecast || {};
+    const marks = [];
+    let earliest = today;
+    for (const m of (p.milestones||[])) if (m.due) {
+      const dt = d(m.due); if (dt < earliest) earliest = dt;
+      const over = m.status !== "done" && dt < today;
+      marks.push(`<span class="mk ms ${m.status==="done"?"done":""} ${over?"overdue":""}" style="left:${X(dt)}%" title="◆ ${esc(m.id)} ${esc(m.ja)} — ${esc(m.due_raw)}${over?"（超過）":""}"><span class="dia"></span></span>`);
+    }
+    for (const t of (p.tasks||[])) if (t.due) {
+      const dt = d(t.due); if (dt < earliest) earliest = dt;
+      const over = t.status !== "done" && dt < today;
+      marks.push(`<span class="mk task ${t.status==="done"?"done":""} ${over?"overdue":""}" style="left:${X(dt)}%" title="● ${esc(t.id)} ${esc(t.ja)}（${esc(t.owner)}）— ${esc(t.due_raw)}${over?"（超過）":""}"><span class="dot"></span></span>`);
+    }
+    let bar = "", fcMark = "", dash = "";
+    if (fc.date) {
+      const fdt = d(fc.date);
+      bar = `<span class="tl-bar ${f.cls}" style="left:${X(earliest)}%; width:${Math.max(1, X(fdt)-X(earliest))}%"></span>`;
+      const low = fc.confidence === "low";
+      if (low) dash = `<span class="tl-bar-dash" style="left:${X(fdt)}%; width:${Math.max(0, 97-X(fdt))}%"></span>`;
+      fcMark = `<span class="mk-fc ${low?"lowconf":""}" style="left:${X(fdt)}%" title="完了予測 ${esc(fc.date)}${low?"（期日未定 "+(fc.undated_tasks+fc.undated_milestones)+"件 → 後ろにずれる可能性）":""}"><span class="flagpole"></span><span class="flaglabel">${fmtMD(fdt)}${low?" +α":""}</span></span>`;
+    }
+    const undated = (fc.undated_tasks||0) + (fc.undated_milestones||0);
+    const fcTxt = !fc.date ? `<span class="fc">完了予測: 期日情報なし</span>`
+      : fc.confidence === "low"
+        ? `<span class="fc warn">予測 ${esc(fc.date.slice(5))} +α（未定${undated}件）</span>`
+        : `<span class="fc">完了予測 ${esc(fc.date.slice(5))}</span>`;
+    return `<div class="tl-row">
+      <div class="tl-label"><b>${p.stats.flag} ${esc(p.name_ja)}</b>${fcTxt}</div>
+      <div class="tl-lane">${gridTpl}<span class="tl-today" style="left:${X(today)}%"></span>${bar}${dash}${marks.join("")}${fcMark}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("tl").innerHTML =
+    `<div class="tl-axis">${ticks}<div class="tl-today-flag" style="left:${X(today)}%">今日 ${fmtMD(today)}</div></div>${rows}`;
+}
 
 function render(data) {
   document.getElementById("gate").style.display = "none";
   for (const id of ["hdr","main","ftr"]) document.getElementById(id).style.display = "";
   document.getElementById("meta").textContent = "更新: " + data.generated_at + " ／ Slack収集: " + (data.harvested_at || "-");
+  const todayIso = data.generated_at.slice(0,10);
 
   const counts = {};
   for (const p of data.projects) counts[p.stats.flag] = (counts[p.stats.flag]||0)+1;
@@ -153,15 +280,27 @@ function render(data) {
   const order = {"🔴":0,"🟠":1,"🟡":2,"🟢":3,"⚪":4};
   const projs = [...data.projects].sort((a,b)=> (order[a.stats.flag]??9)-(order[b.stats.flag]??9));
 
+  renderTimeline(projs, todayIso);
+
   document.getElementById("grid").innerHTML = projs.map((p,i) => {
     const f = FLAG[p.stats.flag] || FLAG["⚪"];
     const s = p.stats;
+    const fc = p.forecast || {};
+    const undated = (fc.undated_tasks||0) + (fc.undated_milestones||0);
+    const fcLine = !fc.date
+      ? `<div class="fc-line"><span class="conf-none">完了予測: 期日情報が未入力のため算出不可</span></div>`
+      : fc.confidence === "low"
+        ? `<div class="fc-line">完了予測: <b>${esc(fc.date)}</b> <span class="conf-low">+α（期日未定 ${undated}件 → 後ろにずれる可能性）</span></div>`
+        : `<div class="fc-line">完了予測: <b>${esc(fc.date)}</b>（全タスク期日設定済み）</div>`;
+    const pieces = (p.missing_pieces||[]).map(pc =>
+      `<div class="piece ${esc(pc.kind)}">${pc.icon} <b>${esc(pc.id)}</b> ${esc(pc.label)} <span class="who">— ${esc(pc.note)}${pc.owner?`／ボール: ${esc(pc.owner)}`:""}</span></div>`
+    ).join("");
     const blockers = (p.blockers||[]).map(bl => {
       const resolved = /（解消/.test(bl.ja);
-      return `<div class="blockrow ${resolved?"resolved":""}">⛔ ${esc(bl.ja)}${resolved?"":` — <span class="age">${bl.age_days}日経過</span>（${esc(bl.owner||"")}）`}</div>`;
+      return resolved ? `<div class="blockrow resolved">⛔ ${esc(bl.ja)}</div>` : "";
     }).join("");
     const taskRows = (p.tasks||[]).map(t => {
-      const overdue = t.due && t.status!=="done" && t.due < data.generated_at.slice(0,10);
+      const overdue = t.due && t.status!=="done" && t.due < todayIso;
       return `<tr class="${overdue?"overdue":""} ${t.status==="done"?"done-row":""}">
         <td class="st">${ST[t.status]||"⚪"}</td>
         <td>${esc(t.ja)}</td>
@@ -170,7 +309,7 @@ function render(data) {
         <td>${t.progress??0}%</td></tr>`;
     }).join("");
     const msRows = (p.milestones||[]).map(m => {
-      const overdue = m.due && m.status!=="done" && m.due < data.generated_at.slice(0,10);
+      const overdue = m.due && m.status!=="done" && m.due < todayIso;
       return `<tr class="${overdue?"overdue":""} ${m.status==="done"?"done-row":""}">
         <td class="st">${ST[m.status]||"⚪"}</td>
         <td>${esc(m.ja)}</td><td></td>
@@ -183,8 +322,10 @@ function render(data) {
         ${s.flag==="🔴"&&s.flag_reason?`<div class="flag-reason">⚠ ${esc(s.flag_reason)}</div>`:""}
       </div>
       <div class="progress-wrap"><div class="bar"><i style="width:${s.avg_progress||0}%"></i></div><span>${s.avg_progress||0}%（✅${s.done}/${s.total}）</span></div>
+      ${fcLine}
       <div class="section"><h3>NEXT ACTION</h3><div class="next">${esc(p.next_action||"-")}</div></div>
-      ${blockers?`<div class="section"><h3>BLOCKERS</h3>${blockers}</div>`:""}
+      ${pieces?`<div class="section"><h3>不足ピース / MISSING PIECES（これを埋めれば終わる）</h3>${pieces}</div>`:`<div class="section"><h3>不足ピース / MISSING PIECES</h3><div class="piece">✅ 期日未定・依存待ち・ブロッカーなし。残タスクの実行のみ</div></div>`}
+      ${blockers?`<div class="section"><h3>解消済みブロッカー</h3>${blockers}</div>`:""}
       <div class="toggle" onclick="const el=document.getElementById('d${i}');el.classList.toggle('hidden');this.textContent=el.classList.contains('hidden')?'▸ タスク詳細を開く':'▾ タスク詳細を閉じる'">▸ タスク詳細を開く</div>
       <div class="section hidden" id="d${i}" style="padding-bottom:1rem">
         <h3>MILESTONES</h3>
