@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Nsight WBS Dashboard</title>
+<style>
+  :root {
+    --navy: #0f2540; --navy2: #16334f; --gold: #c9a227; --white: #ffffff;
+    --bg: #f5f7fa; --card: #ffffff; --text: #1a2433; --muted: #6b7a8d;
+    --red: #d64545; --orange: #e8912d; --yellow: #d9b91c; --green: #3a9e5f; --gray: #9aa7b5;
+    --line: #e3e9f0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: "Hiragino Kaku Gothic ProN","Noto Sans JP",-apple-system,sans-serif; background: var(--bg); color: var(--text); }
+
+  /* ---- password gate ---- */
+  #gate { position:fixed; inset:0; background: var(--navy); display:flex; align-items:center; justify-content:center; z-index:100; }
+  .gate-box { text-align:center; padding: 2rem; max-width: 340px; width:100%; }
+  .gate-box h1 { color: var(--white); font-size: 1.1rem; font-weight:600; letter-spacing:.18em; margin-bottom:.4rem; }
+  .gate-box .sub { color: var(--gold); font-size:.7rem; letter-spacing:.3em; margin-bottom:2rem; }
+  .gate-box input { width:100%; padding:.7rem .9rem; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.08); color:var(--white); border-radius:6px; font-size:1rem; outline:none; }
+  .gate-box input:focus { border-color: var(--gold); }
+  .gate-box button { width:100%; margin-top:.8rem; padding:.7rem; background:var(--gold); color:var(--navy); border:none; border-radius:6px; font-size:.95rem; font-weight:700; cursor:pointer; letter-spacing:.1em; }
+  .gate-box .err { color:#ff9c9c; font-size:.8rem; margin-top:.8rem; min-height:1.2em; }
+
+  /* ---- header ---- */
+  header { background: var(--navy); color: var(--white); padding: 1.1rem 1.4rem; display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:.4rem; }
+  header h1 { font-size: 1.05rem; font-weight:600; letter-spacing:.12em; }
+  header h1 span { color: var(--gold); }
+  header .meta { font-size:.72rem; color:#b8c4d2; }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+
+  /* ---- summary bar ---- */
+  .summary { display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:1.2rem; }
+  .pill { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:.35rem .9rem; font-size:.8rem; }
+  .pill b { font-size:.95rem; }
+
+  /* ---- project cards ---- */
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .card.f-red    { border-top:4px solid var(--red); }
+  .card.f-orange { border-top:4px solid var(--orange); }
+  .card.f-yellow { border-top:4px solid var(--yellow); }
+  .card.f-green  { border-top:4px solid var(--green); }
+  .card.f-gray   { border-top:4px solid var(--gray); }
+  .card-head { padding:.9rem 1rem .6rem; }
+  .card-head .flag-line { display:flex; justify-content:space-between; align-items:center; gap:.5rem; }
+  .card-head h2 { font-size:.98rem; font-weight:700; line-height:1.35; }
+  .badge { font-size:.68rem; padding:.18rem .55rem; border-radius:12px; color:#fff; white-space:nowrap; flex-shrink:0; }
+  .b-red{background:var(--red)} .b-orange{background:var(--orange)} .b-yellow{background:var(--yellow);color:#3d3400} .b-green{background:var(--green)} .b-gray{background:var(--gray)}
+  .flag-reason { font-size:.72rem; color:var(--red); margin-top:.3rem; }
+  .card .prio { font-size:.66rem; color:var(--muted); letter-spacing:.1em; margin-top:.15rem; }
+
+  .progress-wrap { padding:.4rem 1rem .2rem; display:flex; align-items:center; gap:.6rem; }
+  .bar { flex:1; height:7px; background:#e9eef4; border-radius:4px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:linear-gradient(90deg,var(--navy2),var(--gold)); border-radius:4px; }
+  .progress-wrap span { font-size:.75rem; color:var(--muted); white-space:nowrap; }
+
+  .section { padding:.5rem 1rem .3rem; }
+  .section h3 { font-size:.68rem; letter-spacing:.15em; color:var(--muted); margin-bottom:.35rem; font-weight:600; }
+  .next { font-size:.8rem; background:#f2f6fb; border-left:3px solid var(--gold); padding:.45rem .6rem; border-radius:0 5px 5px 0; line-height:1.5; }
+  .blockrow { font-size:.78rem; color:var(--red); padding:.3rem .5rem; background:#fdf1f1; border-radius:5px; margin-bottom:.3rem; line-height:1.45; }
+  .blockrow.resolved { color:var(--muted); background:#f3f5f7; text-decoration:none; }
+  .blockrow .age { font-weight:700; }
+
+  table { width:100%; border-collapse:collapse; font-size:.74rem; }
+  th { text-align:left; color:var(--muted); font-weight:600; padding:.25rem .35rem; border-bottom:1px solid var(--line); white-space:nowrap; }
+  td { padding:.3rem .35rem; border-bottom:1px solid #f0f3f7; vertical-align:top; line-height:1.4; }
+  tr.overdue td { background:#fdf3f3; }
+  tr.done-row td { color:#98a5b3; }
+  .st { white-space:nowrap; }
+  .due-over { color:var(--red); font-weight:700; white-space:nowrap; }
+  .toggle { font-size:.72rem; color:var(--navy2); cursor:pointer; padding:.35rem 1rem .8rem; user-select:none; }
+  .toggle:hover { text-decoration:underline; }
+  .hidden { display:none; }
+  footer { text-align:center; font-size:.68rem; color:var(--muted); padding:1.5rem 0 2rem; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <h1>NSIGHT WBS</h1>
+    <div class="sub">PROJECT DASHBOARD</div>
+    <input type="password" id="pw" placeholder="パスワード / Password" autofocus>
+    <button onclick="unlock()">開く / OPEN</button>
+    <div class="err" id="err"></div>
+  </div>
+</div>
+
+<header style="display:none" id="hdr">
+  <h1>NSIGHT <span>WBS</span> DASHBOARD</h1>
+  <div class="meta" id="meta"></div>
+</header>
+<main style="display:none" id="main">
+  <div class="summary" id="summary"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer style="display:none" id="ftr">Nsight Inc. — internal use only / データはAES-256-GCMで暗号化配信</footer>
+
+<script>
+const FLAG = {
+  "🔴": {cls:"f-red",    b:"b-red",    label:"遅延 DELAYED"},
+  "🟠": {cls:"f-orange", b:"b-orange", label:"ブロック BLOCKED"},
+  "🟡": {cls:"f-yellow", b:"b-yellow", label:"要注意 AT-RISK"},
+  "🟢": {cls:"f-green",  b:"b-green",  label:"順調 ON-TRACK"},
+  "⚪": {cls:"f-gray",   b:"b-gray",   label:"対象外 N/A"},
+};
+const ST = {done:"✅", doing:"🟡", blocked:"🔴", open:"⚪"};
+
+async function unlock() {
+  const pw = document.getElementById("pw").value;
+  const err = document.getElementById("err");
+  err.textContent = "";
+  if (!pw) { err.textContent = "パスワードを入力してください"; return; }
+  err.textContent = "復号中…";
+  try {
+    const res = await fetch("data.enc.json", {cache:"no-store"});
+    if (!res.ok) throw new Error("data fetch failed: " + res.status);
+    const enc = await res.json();
+    const dec = new TextDecoder();
+    const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    const keyMat = await crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey(
+      {name:"PBKDF2", salt:b64(enc.salt), iterations:enc.iter, hash:"SHA-256"},
+      keyMat, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+    const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64(enc.iv)}, key, b64(enc.ct));
+    render(JSON.parse(dec.decode(pt)));
+  } catch(e) {
+    err.textContent = "パスワードが違うか、データ取得に失敗しました";
+    console.error(e);
+  }
+}
+document.getElementById("pw").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+
+function esc(s){ return String(s??"").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function render(data) {
+  document.getElementById("gate").style.display = "none";
+  for (const id of ["hdr","main","ftr"]) document.getElementById(id).style.display = "";
+  document.getElementById("meta").textContent = "更新: " + data.generated_at + " ／ Slack収集: " + (data.harvested_at || "-");
+
+  const counts = {};
+  for (const p of data.projects) counts[p.stats.flag] = (counts[p.stats.flag]||0)+1;
+  document.getElementById("summary").innerHTML =
+    ["🔴","🟠","🟡","🟢","⚪"].filter(f=>counts[f]).map(f =>
+      `<div class="pill">${f} ${esc(FLAG[f].label)} <b>${counts[f]}</b></div>`).join("") +
+    `<div class="pill">案件 <b>${data.projects.length}</b></div>`;
+
+  const order = {"🔴":0,"🟠":1,"🟡":2,"🟢":3,"⚪":4};
+  const projs = [...data.projects].sort((a,b)=> (order[a.stats.flag]??9)-(order[b.stats.flag]??9));
+
+  document.getElementById("grid").innerHTML = projs.map((p,i) => {
+    const f = FLAG[p.stats.flag] || FLAG["⚪"];
+    const s = p.stats;
+    const blockers = (p.blockers||[]).map(bl => {
+      const resolved = /（解消/.test(bl.ja);
+      return `<div class="blockrow ${resolved?"resolved":""}">⛔ ${esc(bl.ja)}${resolved?"":` — <span class="age">${bl.age_days}日経過</span>（${esc(bl.owner||"")}）`}</div>`;
+    }).join("");
+    const taskRows = (p.tasks||[]).map(t => {
+      const overdue = t.due && t.status!=="done" && t.due < data.generated_at.slice(0,10);
+      return `<tr class="${overdue?"overdue":""} ${t.status==="done"?"done-row":""}">
+        <td class="st">${ST[t.status]||"⚪"}</td>
+        <td>${esc(t.ja)}</td>
+        <td>${esc(t.owner)}</td>
+        <td class="${overdue?"due-over":""}">${esc(t.due_raw||"-")}</td>
+        <td>${t.progress??0}%</td></tr>`;
+    }).join("");
+    const msRows = (p.milestones||[]).map(m => {
+      const overdue = m.due && m.status!=="done" && m.due < data.generated_at.slice(0,10);
+      return `<tr class="${overdue?"overdue":""} ${m.status==="done"?"done-row":""}">
+        <td class="st">${ST[m.status]||"⚪"}</td>
+        <td>${esc(m.ja)}</td><td></td>
+        <td class="${overdue?"due-over":""}">${esc(m.due_raw||"-")}</td><td></td></tr>`;
+    }).join("");
+    return `<div class="card ${f.cls}">
+      <div class="card-head">
+        <div class="flag-line"><h2>${esc(p.name_ja)}</h2><span class="badge ${f.b}">${p.stats.flag} ${esc(f.label)}</span></div>
+        <div class="prio">PRIORITY: ${esc((p.priority||"").toUpperCase())} ／ ${esc(p.stage||"")}</div>
+        ${s.flag==="🔴"&&s.flag_reason?`<div class="flag-reason">⚠ ${esc(s.flag_reason)}</div>`:""}
+      </div>
+      <div class="progress-wrap"><div class="bar"><i style="width:${s.avg_progress||0}%"></i></div><span>${s.avg_progress||0}%（✅${s.done}/${s.total}）</span></div>
+      <div class="section"><h3>NEXT ACTION</h3><div class="next">${esc(p.next_action||"-")}</div></div>
+      ${blockers?`<div class="section"><h3>BLOCKERS</h3>${blockers}</div>`:""}
+      <div class="toggle" onclick="const el=document.getElementById('d${i}');el.classList.toggle('hidden');this.textContent=el.classList.contains('hidden')?'▸ タスク詳細を開く':'▾ タスク詳細を閉じる'">▸ タスク詳細を開く</div>
+      <div class="section hidden" id="d${i}" style="padding-bottom:1rem">
+        <h3>MILESTONES</h3>
+        <table><tr><th></th><th>マイルストーン</th><th></th><th>期日</th><th></th></tr>${msRows}</table>
+        <h3 style="margin-top:.7rem">TASKS</h3>
+        <table><tr><th></th><th>タスク</th><th>担当</th><th>予定</th><th>進捗</th></tr>${taskRows}</table>
+      </div>
+    </div>`;
+  }).join("");
+}
+</script>
+</body>
+</html>
